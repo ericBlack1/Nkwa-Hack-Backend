@@ -34,3 +34,14 @@
 [2025-05-09T22:11:51.766Z] INFO: API documentation available at http://0.0.0.0:3000/api-docs
 [2025-05-09T22:12:24.981Z] INFO: Server running on http://0.0.0.0:3000
 [2025-05-09T22:12:24.983Z] INFO: API documentation available at http://0.0.0.0:3000/api-docs
+[2025-05-09T22:17:43.566Z] ERROR: Database connection error:
+[2025-05-09T22:21:44.734Z] ERROR: Database connection error:
+[2025-05-09T22:22:28.340Z] ERROR: Database connection error:
+[2025-05-09T22:22:43.352Z] ERROR: Database connection error:
+[2025-05-09T22:23:33.308Z] ERROR: Database connection error:
+[2025-05-09T22:25:54.619Z] INFO: Server running on http://0.0.0.0:3000
+[2025-05-09T22:25:54.620Z] INFO: API documentation available at http://0.0.0.0:3000/api-docs
+[2025-05-09T22:27:14.890Z] INFO: Server running on http://0.0.0.0:3000
+[2025-05-09T22:27:14.892Z] INFO: API documentation available at http://0.0.0.0:3000/api-docs
+[2025-05-09T22:28:43.821Z] INFO: Server running on http://0.0.0.0:3000
+[2025-05-09T22:28:43.822Z] INFO: API documentation available at http://0.0.0.0:3000/api-docs

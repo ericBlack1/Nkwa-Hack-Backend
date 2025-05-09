@@ -76,9 +76,11 @@ router.post('/register', authController.register);
  *               identifier:
  *                 type: string
  *                 description: Email or phone number
+ *                 example: user@example.com
  *               password:
  *                 type: string
  *                 format: password
+ *                 example: password123
  *     responses:
  *       200:
  *         description: Login successful
