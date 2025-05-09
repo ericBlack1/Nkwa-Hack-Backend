@@ -10,17 +10,26 @@ class User {
   }
 
   static async findByEmail(email) {
-    const result = await query(
-      'SELECT * FROM users WHERE email = $1',
-      [email]
-    );
-    return result.rows[0];
-  }
+		const result = await query(
+		  'SELECT * FROM users WHERE LOWER(email) = LOWER($1)',
+		  [email]
+		);
+		return result.rows[0];
+	}
 
   static async findByPhone(phone) {
     const result = await query(
       'SELECT * FROM users WHERE phone = $1',
       [phone]
+    );
+    return result.rows[0];
+  }
+  
+  static async findByEmailOrPhone(identifier) {
+    const result = await query(
+      `SELECT * FROM users 
+       WHERE email = $1 OR phone = $1`,
+      [identifier]
     );
     return result.rows[0];
   }
