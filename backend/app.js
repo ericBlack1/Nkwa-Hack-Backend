@@ -1,0 +1,23 @@
+const express = require('express');
+const cors = require('cors');
+const setupSwagger = require('./utils/swagger'); // Updated import
+
+const app = express();
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Initialize Swagger
+setupSwagger(app); // This should come before your routes
+
+// Routes
+app.use('/api/auth', require('./routes/auth.routes'));
+
+// Basic route to test if server is running
+app.get('/', (req, res) => {
+  res.redirect('/api-docs');
+});
+
+module.exports = app;
