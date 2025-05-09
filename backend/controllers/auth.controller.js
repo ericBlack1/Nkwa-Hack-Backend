@@ -1,5 +1,7 @@
 const User = require('../models/user.model');
 const { hashPassword } = require('../utils/auth');
+const { comparePassword, generateToken } = require('../utils/auth');
+const AuthService = require('../services/auth.service');
 
 const register = async (req, res, next) => {
   try {
@@ -44,6 +46,22 @@ const register = async (req, res, next) => {
   }
 };
 
+const login = async (req, res, next) => {
+  try {
+    const { identifier, password } = req.body;
+
+    const result = await AuthService.login(identifier, password);
+
+    res.json({
+      success: true,
+      data: result
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
+  login,
 };
