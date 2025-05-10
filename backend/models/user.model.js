@@ -127,6 +127,36 @@ class User {
 
     await query(queryText, queryParams);
   }
+
+  static async updateUserResetToken(id, resetToken, resetTokenExpiry) {
+    await query(
+      'UPDATE users SET reset_token = $1, reset_token_expiry = $2 WHERE id = $3',
+      [resetToken, resetTokenExpiry, id]
+    );
+  }
+
+  static async findByResetToken(token) {
+    const result = await query(
+      'SELECT * FROM users WHERE reset_token = $1',
+      [token]
+    );
+    return result.rows[0];
+  }
+
+  static async updateUserPassword(id, newPassword) {
+    await query(
+      'UPDATE users SET password = $1 WHERE id = $2',
+      [newPassword, id]
+    );
+  }
+
+  static async clearResetToken(id) {
+    await query(
+      'UPDATE users SET reset_token = NULL, reset_token_expiry = NULL WHERE id = $1',
+      [id]
+    );
+  }
+
 }
 
 module.exports = User;
