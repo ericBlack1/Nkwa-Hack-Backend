@@ -33,16 +33,18 @@ const verifyPhoneOTP = async (req, res, next) => {
 const verifyEmailOTP = async (req, res, next) => {
   try {
     const { otp } = req.body;
-    const userId = req.user.userId; // Get from authenticated token
+    const userId = req.user.userId; // From JWT
     
-    if (!userId) {
-      return res.status(400).json({ error: "User ID missing" });
-    }
-
     const result = await OTPService.verifyEmailOTP(userId, otp);
-    res.json(result);
+    res.status(200).json(result);
   } catch (error) {
-    next(error);
+    res.status(error.statusCode || 500).json({
+      success: false,
+      error: {
+        message: error.message,
+        code: error.statusCode || 500
+      }
+    });
   }
 };
 

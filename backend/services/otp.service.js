@@ -67,45 +67,65 @@ class OTPService {
   }
 
   static async verifyEmailOTP(userId, otp) {
-  try {
-    console.log(`Verifying OTP for user: ${userId}`); // Debug log
-    
-    const user = await User.findById(userId);
-    
-    if (!user) {
-      throw new Error('User not found. Please ensure you are logged in correctly.');
+    try {
+      logger.info(`Verifying OTP for user: ${userId}`);
+      
+      const user = await User.findById(userId);
+      
+      if (!user) {
+        const error = new Error('User not found. Please ensure you are logged in correctly.');
+        error.statusCode = 404;
+        throw error;
+      }
+
+      // Additional validation checks
+      if (!user.email_otp) {
+        const error = new Error('No OTP requested for this email. Please request a new OTP first.');
+        error.statusCode = 400;
+        throw error;
+      }
+
+      if (user.email_otp !== otp) {
+        const error = new Error('Invalid OTP code. Please check and try again.');
+        error.statusCode = 400;
+        throw error;
+      }
+
+      if (new Date() > new Date(user.email_otp_expiry)) {
+        const error = new Error('OTP has expired. Please request a new one.');
+        error.statusCode = 400;
+        throw error;
+      }
+
+      // Update verification status
+      await User.updateUserVerification(userId, {
+        email_verified: true,
+        email_otp: null,
+        email_otp_expiry: null
+      });
+
+      return { 
+        success: true, 
+        message: 'Email successfully verified',
+        data: {
+          email: user.email,
+          verifiedAt: new Date()
+        }
+      };
+      
+    } catch (error) {
+      logger.error('OTP verification failed:', error);
+      
+      // Ensure all errors have proper status codes
+      if (!error.statusCode) {
+        error.statusCode = 500;
+        error.message = 'An unexpected error occurred during verification';
+      }
+      
+      throw error;
     }
-
-    // Additional validation checks
-    if (!user.email_otp) {
-      throw new Error('No OTP requested for this email');
-    }
-
-    if (user.email_otp !== otp) {
-      throw new Error('Invalid OTP code');
-    }
-
-    if (new Date() > new Date(user.email_otp_expiry)) {
-      throw new Error('OTP has expired. Please request a new one.');
-    }
-
-    // Update verification status
-    await User.updateUserVerification(userId, {
-      email_verified: true,
-      email_otp: null,
-      email_otp_expiry: null
-    });
-
-    return { 
-      success: true, 
-      message: 'Email successfully verified' 
-    };
-    
-  } catch (error) {
-    console.error('OTP verification failed:', error);
-    throw error; // Re-throw for controller to handle
   }
-}
+  
 }
 
 module.exports = OTPService;
