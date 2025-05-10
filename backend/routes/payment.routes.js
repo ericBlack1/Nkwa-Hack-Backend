@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const paymentController = require("../controllers/payment.controller");
-const authMiddleware = require("../utils/auth");
+const authenticate = require("../utils/authMiddleware"); // Changed to match what's used in wallet.routes.js
 
 /**
  * @swagger
@@ -68,6 +68,6 @@ const authMiddleware = require("../utils/auth");
  *       500:
  *         description: Internal server error
  */
-router.post("/buy", authMiddleware, paymentController.buyTokens);
+router.post("/buy", authenticate, paymentController.buyTokens); // Changed to use the correct middleware
 
 module.exports = router;

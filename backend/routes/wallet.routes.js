@@ -1,11 +1,16 @@
 const express = require("express");
 const router = express.Router();
+const authenticate = require("../utils/authMiddleware"); // Your existing middleware
 const walletController = require("../controllers/wallet.controller");
-const authMiddleware = require("../utils/auth");
 
 /**
  * @swagger
  * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
  *   schemas:
  *     Wallet:
  *       type: object
@@ -16,6 +21,7 @@ const authMiddleware = require("../utils/auth");
  *         privateKey:
  *           type: string
  *           example: "0x..."
+ *           description: Only exposed in development
  *     Balance:
  *       type: object
  *       properties:
@@ -23,7 +29,7 @@ const authMiddleware = require("../utils/auth");
  *           type: string
  *         blockchainBalance:
  *           type: string
- *           description: Balance in AFC from blockchain
+ *           description: Balance in AFC from blockchain (in wei)
  *           example: "100000000000000000000"
  *         internalBalance:
  *           type: number
@@ -74,11 +80,11 @@ const authMiddleware = require("../utils/auth");
  *             schema:
  *               $ref: '#/components/schemas/Wallet'
  *       401:
- *         description: Unauthorized
+ *         description: Unauthorized (missing or invalid token)
  *       500:
  *         description: Internal server error
  */
-router.post("/", authMiddleware, walletController.createWallet);
+router.post("/", authenticate, walletController.createWallet);
 
 /**
  * @swagger
@@ -102,7 +108,7 @@ router.post("/", authMiddleware, walletController.createWallet);
  *       500:
  *         description: Internal server error
  */
-router.get("/balance", authMiddleware, walletController.getWalletBalance);
+router.get("/balance", authenticate, walletController.getWalletBalance);
 
 /**
  * @swagger
@@ -132,6 +138,6 @@ router.get("/balance", authMiddleware, walletController.getWalletBalance);
  *       500:
  *         description: Internal server error
  */
-router.post("/transfer", authMiddleware, walletController.transferTokens);
+router.post("/transfer", authenticate, walletController.transferTokens);
 
 module.exports = router;
